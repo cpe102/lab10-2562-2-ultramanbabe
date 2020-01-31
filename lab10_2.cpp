@@ -1,5 +1,7 @@
 #include<iostream>
 #include<string>
+#include <cstdlib>
+#include <ctime>
 
 using namespace std;
 
@@ -8,11 +10,15 @@ int cardScores[] = {0,1,2,3,4,5,6,7,8,9,10,10,10,10};
 
 int drawCard(void){
 	//Write the function to random the number from 1 to 13 and return that random number.
+	int x = rand()%13 + 1;
+	return x;
 }
 
 int calScore(int x,int y,int z){
 	//Write the function to calculate the score with is the rightmost digit of summation of the scores from three cards.
 	//Return the score. 
+	int sum = (cardScores[x] + cardScores[y] + cardScores[z]) % 10;
+	return sum;
 }
 
 int findYugiAction(int s){	
@@ -21,22 +27,34 @@ int findYugiAction(int s){
 	else{
 		// If current score is 6,7,8, Yugi will draw with probability 69% and will stay with probability 31% 
 		// Write conditions here using random number 
+		srand(time(0));
+		int x = rand()%100 + 1;
+		if(x >= 69){
+			return 1;
+		}else{
+			return 2;
+		}
 	}
 }
 
 void checkWinner(int p, int y){
 	// Write condition for cout in this function
 	cout << "\n---------------------------------\n";
+	if(p == y){
 	cout <<   "|             Draw!!!           |"; // when p is equal to y
+	}else if(p > y){
 	cout <<   "|         Player wins!!!        |"; // when p is greater than y
+	}else{
 	cout <<   "|          Yugi wins!!!         |"; // when p is less than y
+	}
 	cout << "\n---------------------------------\n";
 }
 
 int main(){	
+	srand(time(0));
 	int playerScore, yugiScore, playerAction, yugiAction;
 	int playerCards[3] = {drawCard(), drawCard(), 0};
-	int yugiCards[3]; //This line of code is not completed. You need to initialize value of yugiCards[].
+	int yugiCards[3] = {drawCard(), drawCard(), 0}; //This line of code is not completed. You need to initialize value of yugiCards[].
 	
 	
 	cout << "---------ORE NO TURN, DRAW!!!------------\n";
@@ -54,6 +72,13 @@ int main(){
 		cout << "Your 3rd card: " << "\n";
 		cout << "Your new score: " << "\n";
 		*/
+		drawCard();
+		cout << "Player draws the 3rd card!!!\n";
+		playerCards[2] = drawCard();
+		cout << "Your 3rd card: " << cardNames[playerCards[2]] << endl;
+		playerScore = calScore(playerCards[0],playerCards[1],playerCards[2]);
+		cout << "Your new score: " << playerScore << endl;
+		
 	}
 	cout << "------------ Turn end -------------------\n\n";
 	
@@ -72,6 +97,18 @@ int main(){
 	}
 	cout << "------------ Turn end -------------------\n";
 	*/
+	cout << "---------YUGI'S TURN, DRAW!!!------------\n";
+	cout << "Yugi's cards: " << cardNames[yugiCards[0]] << " " << cardNames[yugiCards[1]] << endl;
+	yugiScore = calScore(yugiCards[0], yugiCards[1], yugiCards[2]);
+	cout << "Yugi's score: " << yugiScore << endl;
+	yugiAction = findYugiAction(yugiScore);
+	if(yugiAction == 1){
+		cout << "Yugi draws the 3rd card!!!\n";
+		yugiCards[2] = drawCard();
+		cout << "Yugi's 3rd card: " << cardNames[yugiCards[2]] << endl;
+		yugiScore = calScore(yugiCards[0], yugiCards[1], yugiCards[2]);
+		cout << "Yugi's new score: " << yugiScore << endl;
+	}
 	
 	checkWinner(playerScore,yugiScore);
 }
